@@ -5,17 +5,41 @@
   <title>Reproductor de radio</title>
   <style>
     /* Estilos para el reproductor de radio */
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+    }
     #radio-container {
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-top: 50px;
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 10px 0;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 200px;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #3e8e41;
+    }
+    #radio-player {
       margin-top: 20px;
-    }
-    #radio-container audio {
-      margin-top: 10px;
-    }
-    #radio-container button {
-      margin-top: 10px;
+      width: 400px;
     }
   </style>
 </head>
@@ -52,5 +76,8 @@
     // Agregar eventos a los botones para cambiar la fuente del reproductor de radio
     radio1Btn.addEventListener("click", playRadio1);
     radio2Btn.addEventListener("click", playRadio2);
-    radio3Btn.addEventListener("click
+    radio3Btn.addEventListener("click", playRadio3);
+  </script>
+</body>
+</html>
 
