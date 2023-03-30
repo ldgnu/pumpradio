@@ -1,10 +1,56 @@
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Pump! Radio</title>
-  </head>
-  <body>
-    <iframe src="https://zeno.fm/player/pumphradio" width="1000" height="600" frameborder="0" scrolling="no"></iframe>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reproductor de radio</title>
+  <style>
+    /* Estilos para el reproductor de radio */
+    #radio-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    #radio-container audio {
+      margin-top: 10px;
+    }
+    #radio-container button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="radio-container">
+    <h1>Reproductor de radio</h1>
+    <button id="radio1">Radio 1</button>
+    <button id="radio2">Radio 2</button>
+    <button id="radio3">Radio 3</button>
+    <audio id="radio-player" controls></audio>
+  </div>
+  
+  <script>
+    // Variables para los botones y el reproductor de radio
+    const radio1Btn = document.getElementById("radio1");
+    const radio2Btn = document.getElementById("radio2");
+    const radio3Btn = document.getElementById("radio3");
+    const radioPlayer = document.getElementById("radio-player");
+    
+    // Funciones para cambiar la fuente del reproductor de radio
+    function playRadio1() {
+      radioPlayer.src = "https://URL_DE_TU_RADIO_1";
+      radioPlayer.play();
+    }
+    function playRadio2() {
+      radioPlayer.src = "https://URL_DE_TU_RADIO_2";
+      radioPlayer.play();
+    }
+    function playRadio3() {
+      radioPlayer.src = "https://URL_DE_TU_RADIO_3";
+      radioPlayer.play();
+    }
+    
+    // Agregar eventos a los botones para cambiar la fuente del reproductor de radio
+    radio1Btn.addEventListener("click", playRadio1);
+    radio2Btn.addEventListener("click", playRadio2);
+    radio3Btn.addEventListener("click
+
