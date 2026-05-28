@@ -32,6 +32,7 @@ class PumpRadioApp {
     this.loadStation(DEFAULT_STATION)
     this.initBarVisualizer()
     this.initNews()
+    this.initDebug()
 
     const savedVolume = this.engine.getVolume()
     this.els.volume.value = savedVolume
@@ -300,6 +301,19 @@ class PumpRadioApp {
       this.newsManager = new NewsManager(this.els.newsContainer)
       this.newsManager.init()
     }
+  }
+
+  initDebug() {
+    const dbg = document.getElementById('dbg')
+    if (!dbg) return
+    const log = (msg) => { dbg.textContent = msg }
+    log('App OK')
+    document.addEventListener('click', () => log('click'))
+    document.addEventListener('scroll', () => log('scroll'))
+    this.engine.onPlayStateChange = ((orig) => (playing) => {
+      orig(playing)
+      log('play:' + (playing ? '▶' : '⏸'))
+    })(this.engine.onPlayStateChange)
   }
 
   handleKeyboard(e) {
