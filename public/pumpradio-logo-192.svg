@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" fill="#0a0a0a"/>
+  <polygon points="60,30 150,96 60,162" fill="#ff2200"/>
+  <polygon points="68,38 138,96 68,154" fill="#0a0a0a"/>
+  <polygon points="75,45 126,96 75,147" fill="#ff2200"/>
+  <text x="150" y="172" font-family="Inter,sans-serif" font-weight="900" font-size="18" fill="#f0f0f0" text-anchor="end">P</text>
+</svg>

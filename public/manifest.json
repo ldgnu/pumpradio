@@ -1,0 +1,25 @@
+{
+  "name": "PumpRadio",
+  "short_name": "PumpRadio",
+  "description": "Radio underground de hardtechno, hardcore, gabber y rave. En vivo 24/7.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "categories": ["music", "entertainment", "radio"],
+  "icons": [
+    {
+      "src": "/pumpradio-logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pumpradio-logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
