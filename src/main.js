@@ -6,22 +6,19 @@
 import './style.css'
 import { STATIONS, DEFAULT_STATION } from './stations.js'
 import { AudioEngine } from './engine.js'
-import { AudioVisualizer, BarVisualizer } from './visualizer.js'
+import { BarVisualizer } from './visualizer.js'
 import { NewsManager } from './news.js'
 
 class PumpRadioApp {
   constructor() {
-    // Estado
     this.currentStation = null
     this.metadata = { song: 'Cargando...', artist: 'PumpRadio' }
     this.engine = new AudioEngine()
     this.newsManager = null
-    this.ambientVisualizer = null
     this.barVisualizer = null
     this.volumeBeforeMute = 80
     this.shortcutsOpen = false
 
-    // DOM refs
     this.els = {}
 
     this.cacheDom()
@@ -33,16 +30,15 @@ class PumpRadioApp {
   init() {
     this.setupEventListeners()
     this.loadStation(DEFAULT_STATION)
-    this.initVisualizers()
+    this.initBarVisualizer()
     this.initNews()
 
-    // Set initial volume from localStorage
     const savedVolume = this.engine.getVolume()
     this.els.volume.value = savedVolume
     this.engine.setVolume(savedVolume)
     this.updateVolumeIcon(savedVolume)
 
-    console.log('[PumpRadio] 🎧 Inicializado')
+    console.log('[PumpRadio] Inicializado')
   }
 
   populateStationSelect() {
@@ -71,7 +67,6 @@ class PumpRadioApp {
       volIcon: document.getElementById('vol-icon'),
       stationSelect: document.getElementById('station-select'),
       visualizerBars: document.getElementById('visualizer-bars'),
-      ambientCanvas: document.getElementById('ambient-canvas'),
       newsContainer: document.getElementById('news-container'),
       errorOverlay: document.getElementById('error-overlay'),
       errorText: document.getElementById('error-text'),
@@ -306,31 +301,10 @@ class PumpRadioApp {
     })
   }
 
-  initVisualizers() {
-    // Ambient canvas visualizer (background)
-    if (this.els.ambientCanvas) {
-      this.ambientVisualizer = new AudioVisualizer(this.els.ambientCanvas)
-    }
-
-    // Bar visualizer (UI bars)
+  initBarVisualizer() {
     if (this.els.visualizerBars) {
       this.barVisualizer = new BarVisualizer(this.els.visualizerBars)
     }
-
-    // Connect to analyser when audio context is available
-    // This happens lazily on first play
-    const checkAnalyser = setInterval(() => {
-      const ctx = this.engine.audioCtx
-      const source = this.engine.source
-      if (ctx && source && this.ambientVisualizer) {
-        this.ambientVisualizer.connect(ctx, source)
-        this.ambientVisualizer.start()
-        clearInterval(checkAnalyser)
-      }
-    }, 500)
-
-    // Stop checking after 30s
-    setTimeout(() => clearInterval(checkAnalyser), 30000)
   }
 
   initNews() {
