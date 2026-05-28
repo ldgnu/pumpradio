@@ -32,7 +32,6 @@ export class AudioEngine {
 
   setupAudio() {
     this.audio = new Audio()
-    this.audio.crossOrigin = 'anonymous'
     this.audio.preload = 'auto'
 
     this.audio.onplay = () => {
@@ -104,11 +103,8 @@ export class AudioEngine {
     this.metadataUrl = metadataUrl
     this.reconnectAttempts = 0
 
-    // Pause current
-    if (this.audio) {
-      this.audio.pause()
-      this.audio.src = ''
-    }
+    // Create fresh audio element to allow reconnecting MediaElementSource
+    this.setupAudio()
 
     // Clean up old EventSource
     if (this.eventSource) {
