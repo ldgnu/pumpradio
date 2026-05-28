@@ -413,6 +413,14 @@ main {
   border-radius: 2px;
 }
 
+.track-info .station-name {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
 /* --- Controls --- */
 .player-controls {
   display: flex;

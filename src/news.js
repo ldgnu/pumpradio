@@ -1,67 +1,55 @@
 /**
  * Noticias — Gestión de contenido
  * 
- * Como no tenemos backend propio, hacemos fetch a fuentes RSS/API
- * públicas y las renderizamos como cards.
- * 
- * Por ahora: datos hardcodeados como showcase.
- * Próximo paso: RSS real + traducción automática.
+ * Fuente principal: Hard News (https://hardnews.nl/en/)
+ * Traducción y adaptación al español argentino.
  */
 
-const FALLBACK_NEWS = [
+const NEWS_ARTICLES = [
   {
     id: 1,
-    title: 'Nuevo set de I Hate Models en Berghain circula online',
-    summary: 'Una grabación del set completo del DJ francés en la última noche de Klubnacht está dando vueltas en SoundCloud y Mixcloud.',
-    source: 'Rave News',
+    title: 'Dominator 2026: apostá todo al festival de hardcore más masivo',
+    summary: 'El festival de hardcore más grande de Países Bajos vuelve con una producción monstruosa. Escenarios temáticos, lo mejor del underground y una experiencia que no tiene nada que envidiarle a los grandes. Verano, sol, hardcore: la combinación perfecta.',
+    source: 'Hard News',
     date: '2026-05-27',
-    url: '#',
-    tags: ['hardtechno', 'berghain']
+    url: 'https://hardnews.nl/en/place-your-bets-go-all-in-on-dominator-2026/',
+    tags: ['hardcore', 'festival', 'dominator']
   },
   {
     id: 2,
-    title: 'Thunderdome 2026 anuncia lineup completo',
-    summary: 'El festival de hardcore más grande del mundo vuelve con Angerfist, Miss K8, Deadly Guns y más de 50 artistas en 5 escenarios.',
-    source: 'Hardcore News',
-    date: '2026-05-26',
-    url: '#',
-    tags: ['hardcore', 'festival', 'thunderdome']
+    title: 'Decibel Outdoor revela el line-up completo del WKND',
+    summary: 'El festival más picante del hardstyle suelto acaba de soltar su cartel para las noches del WKND. B2S se mandó una programación que promete caos de calidad desde que cae el sol hasta que salen los pájaros. Si pensabas skipearlo, reconsideralo.',
+    source: 'Hard News',
+    date: '2026-05-27',
+    url: 'https://hardnews.nl/en/decibel-outdoor-unveils-extensive-wknd-line-up/',
+    tags: ['hardstyle', 'festival', 'decibel']
   },
   {
     id: 3,
-    title: 'Nuevo sello: Industrial Techno Records lanza compilado VA',
-    summary: '17 artistas de la escena industrial techno global se unen en un compilado benéfico para clubs underground afectados por cierres.',
-    source: 'Electronic Pulse',
-    date: '2026-05-25',
-    url: '#',
-    tags: ['industrial', 'techno']
+    title: 'De drill beats a uptempo: la historia del hype bizarro de KEMAL',
+    summary: 'El nombre KEMAL explotó en los últimos meses. En Classified el área estaba repleta, en REBiRTH se robó la escena, y en las redes no se habla de otra cosa. ¿De dónde salió este pibe? La historia de cómo pasó de hacer drill a ser la sensación del uptempo.',
+    source: 'Hard News',
+    date: '2026-05-26',
+    url: 'https://hardnews.nl/en/from-drill-beats-to-uptempo-the-story-behind-kemals-bizarre-hype/',
+    tags: ['uptempo', 'kemal', 'entrevista']
   },
   {
     id: 4,
-    title: 'Defqon.1 2026 rompe récord de asistencia',
-    summary: 'El festival australiano de hardstyle y hardcore congregó a más de 35,000 personas en Sídney durante el fin de semana.',
-    source: 'Hardstyle Mag',
-    date: '2026-05-24',
-    url: '#',
-    tags: ['hardstyle', 'festival', 'defqon']
+    title: 'Musical Madness cumple 20 años: de club chico a fenómeno del hardstyle alemán',
+    summary: 'Lo que arrancó sin un master plan terminó siendo uno de los sellos más importantes de Alemania. Veinte años después, Musical Madness mira para atrás y repasa cómo pasaron de hacer eventos en boliches chicos a llenar estadios. Una historia de laburo, constancia y kicks.',
+    source: 'Hard News',
+    date: '2026-05-23',
+    url: 'https://hardnews.nl/en/musical-madness-celebrates-20-years-from-small-club-nights-to-german-hardstyle-phenomenon/',
+    tags: ['hardstyle', 'musical-madness', 'aniversario']
   },
   {
     id: 5,
-    title: 'Escucha: nuevo track de 999999999 con sonido más oscuro',
-    summary: 'El dúo italiano vuelve con un sonido más industrial y menos rave, adelantando su próximo EP en Possession Records.',
-    source: 'Techno Radar',
-    date: '2026-05-23',
-    url: '#',
-    tags: ['hardtechno', 'industrial', 'release']
-  },
-  {
-    id: 6,
-    title: 'Los mejores festivales de música underground en Europa 2026',
-    summary: 'Desde el Stone Techno Festival en Serbia hasta el Nachtdigital en Alemania: guía completa de festivales underground para este verano.',
-    source: 'Underground Guide',
-    date: '2026-05-22',
-    url: '#',
-    tags: ['festival', 'guide']
+    title: 'DJ The Prophet vuelve a los escenarios',
+    summary: 'Una leyenda del hardstyle vuelve a donde pertenece. Después de un tiempo fuera de la ruta, The Prophet confirma su regreso a los escenarios. Se viene show en grande, con toda la artillería de siempre. Los que vivieron la época dorada saben que esto es notición.',
+    source: 'Hard News',
+    date: '2026-05-21',
+    url: 'https://hardnews.nl/en/dj-the-prophet-returns-to-the-stage/',
+    tags: ['hardstyle', 'the-prophet', 'regreso']
   }
 ]
 
@@ -72,10 +60,7 @@ export class NewsManager {
   }
 
   async init() {
-    this.render(FALLBACK_NEWS)
-
-    // Try to fetch real news if we had an API
-    // this.fetchFromRSS().then(articles => this.render(articles))
+    this.render(NEWS_ARTICLES)
   }
 
   render(articles) {
