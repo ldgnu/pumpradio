@@ -457,6 +457,12 @@ main {
   opacity: 0.5;
 }
 
+.btn-play.coming-soon {
+  pointer-events: none;
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 /* Volume */
 .volume-control {
   display: flex;

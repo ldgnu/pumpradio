@@ -24,13 +24,13 @@ class PumpRadioApp {
     // DOM refs
     this.els = {}
 
+    this.cacheDom()
     this.populateStationSelect()
     this.bindEngineEvents()
     this.init()
   }
 
   init() {
-    this.cacheDom()
     this.setupEventListeners()
     this.loadStation(DEFAULT_STATION)
     this.initVisualizers()
@@ -47,7 +47,9 @@ class PumpRadioApp {
 
   populateStationSelect() {
     this.els.stationSelect.innerHTML = STATIONS.map(s =>
-      `<option value="${s.id}">${s.name} — ${s.genre}</option>`
+      `<option value="${s.id}" ${s.comingSoon ? 'disabled' : ''}>
+        ${s.name}${s.comingSoon ? ' (Próximamente)' : ''}
+      </option>`
     ).join('')
   }
 
@@ -189,8 +191,10 @@ class PumpRadioApp {
 
     // Update UI
     this.els.stationName.textContent = station.name
-    this.els.stationDesc.textContent = station.description
-    this.els.stationTag.textContent = station.genre
+    this.els.stationDesc.textContent = station.comingSoon
+      ? 'Próximamente — Música en camino. Seguí disfrutando Pump! Radio mientras tanto.'
+      : station.description
+    this.els.stationTag.textContent = station.comingSoon ? 'Próximamente' : station.genre
 
     // Update genre tags
     this.els.genreTags.innerHTML = station.tags.map(t =>
@@ -198,16 +202,29 @@ class PumpRadioApp {
     ).join('')
 
     // Reset metadata
-    this.metadata = { song: 'Cargando...', artist: station.name }
-    this.els.songName.textContent = 'Cargando...'
-    this.els.artistName.textContent = station.name
+    this.els.songName.textContent = station.comingSoon ? 'Próximamente' : 'Cargando...'
+    this.els.artistName.textContent = station.comingSoon ? 'Estación en preparación' : station.name
 
     // Reset cover
     this.els.albumImg.style.display = 'none'
     this.els.albumFallback.textContent = station.name.charAt(0)
 
-    // Load stream
-    this.engine.load(station.streamUrl, station.metadataUrl)
+    // Disable play button if coming soon
+    this.els.playBtn.classList.toggle('coming-soon', station.comingSoon)
+
+    // Load stream (only if not coming soon)
+    if (!station.comingSoon) {
+      this.engine.load(station.streamUrl, station.metadataUrl)
+    } else {
+      // Stop any playing audio
+      if (this.engine && this.engine.audio) {
+        this.engine.audio.pause()
+        this.engine.audio.src = ''
+      }
+      this.els.playBtn.classList.remove('playing')
+      this.els.playIcon.textContent = '⏸'
+      if (this.barVisualizer) this.barVisualizer.stop()
+    }
   }
 
   togglePlay() {
