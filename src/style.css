@@ -1,33 +1,32 @@
 /* ============================================
-   PUMPRADIO — Sistema de Diseño Underground
-   Inspiración: Gabber, Hardcore, Industrial Rave
-   Berghain, Warehouse, Brutalism
+   PUMPRADIO — Sistema de Diseño
+   Jazz futurista · Grooves electrónicos · Beats
    ============================================ */
 
 /* --- Custom Properties (Design Tokens) --- */
 :root {
   /* Paleta principal */
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #111111;
-  --bg-tertiary: #1a1a1a;
-  --bg-card: #141414;
-  --bg-hover: #1e1e1e;
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #161616;
+  --bg-tertiary: #1d1d1d;
+  --bg-card: #181818;
+  --bg-hover: #222222;
 
-  --text-primary: #f0f0f0;
-  --text-secondary: #888888;
-  --text-muted: #555555;
-  --text-accent: var(--accent-color, #ff2200);
+  --text-primary: #e8e4dd;
+  --text-secondary: #99948d;
+  --text-muted: #66615a;
+  --text-accent: var(--accent-color, #cc6600);
 
   /* Colores de acento (por estación) */
-  --accent-color: #ff2200;
-  --accent-secondary: #cc0000;
-  --accent-glow: #ff6600;
+  --accent-color: #cc6600;
+  --accent-secondary: #993300;
+  --accent-glow: #ee8833;
 
   /* Estados */
-  --live-color: #ff0044;
-  --success: #00cc66;
-  --warning: #ff8800;
-  --error: #ff0044;
+  --live-color: #cc4433;
+  --success: #44aa66;
+  --warning: #ddaa33;
+  --error: #cc4433;
 
   /* Tipografía */
   --font-display: 'Inter', system-ui, -apple-system, sans-serif;
@@ -35,7 +34,7 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Layout */
-  --header-height: 64px;
+  --header-height: 60px;
   --player-min-height: 100vh;
   --nav-width: 280px;
 
@@ -48,7 +47,7 @@
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.6);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.8);
-  --shadow-glow: 0 0 20px rgba(255,34,0,0.3);
+  --shadow-glow: 0 0 20px rgba(204,102,0,0.2);
 }
 
 /* --- Reset & Base --- */
@@ -167,7 +166,7 @@ header {
   background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,34,0,0.1);
+  border-bottom: 1px solid rgba(204,102,0,0.08);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -197,21 +196,21 @@ header {
 }
 
 .logo-icon {
-  width: 36px;
-  height: 36px;
   background: linear-gradient(135deg, var(--accent-color), var(--accent-glow));
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 20% 50%);
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 900;
   color: var(--bg-primary);
 }
 
 .logo-icon::after {
   content: 'P';
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .logo-text span {

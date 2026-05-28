@@ -1,109 +1,80 @@
 /**
  * Estaciones de PumpRadio
- * Cada estación tiene branding, color, género y stream propio.
+ * Hardcore, Hardstyle, Nu Jazz, Future Jazz, Jazztronica
  */
 
-// Único stream funcionando por ahora (hardstyle)
-const ACTIVE_STREAM = 'https://stream.zeno.fm/gpv2kgzwum0uv'
-const ACTIVE_METADATA = 'https://api.zeno.fm/mounts/metadata/subscribe/e4vzegzwum0uv'
+const HC_STREAM = 'https://stream.zeno.fm/gpv2kgzwum0uv'
+const HC_METADATA = 'https://api.zeno.fm/mounts/metadata/subscribe/e4vzegzwum0uv'
 
 export const STATIONS = [
   {
     id: 'pump-radio',
-    name: 'Pump! Radio',
-    tagline: 'Hardtechno · Rave · Underground',
-    genre: 'Hardtechno',
-    description: 'La estación original. Hardtechno industrial, rave y música underground electrónica 24/7.',
-    color: '#ff2200',
-    colorSecondary: '#cc0000',
-    accent: '#ff6600',
-    streamUrl: ACTIVE_STREAM,
-    metadataUrl: ACTIVE_METADATA,
-    tags: ['hardtechno', 'industrial', 'rave', 'underground'],
+    name: 'PumpRadio',
+    tagline: 'Hardcore · Hardstyle · Nu Jazz · Grooves',
+    genre: 'Multi-género',
+    description: 'La estación principal. Hardcore cuando necesitás potencia, hardstyle para los kicks melódicos, y jazz futurista para bajar. Un viaje completo.',
+    color: '#cc4400',
+    colorSecondary: '#992200',
+    accent: '#ee7722',
+    streamUrl: HC_STREAM,
+    metadataUrl: HC_METADATA,
+    tags: ['hardcore', 'hardstyle', 'nujazz', 'electronic'],
     comingSoon: false
   },
   {
     id: 'hardstyle',
     name: 'Neon Hardstyle',
-    tagline: 'Hardstyle · Reverse Bass · Melodic',
+    tagline: 'Hardstyle · Raw · Melodic',
     genre: 'Hardstyle',
     description: 'Hardstyle melódico y potente. Reverse bass, kicks contundentes, breakdowns épicos.',
-    color: '#00ddff',
-    colorSecondary: '#0099cc',
-    accent: '#66eeff',
-    streamUrl: ACTIVE_STREAM,
-    metadataUrl: ACTIVE_METADATA,
-    tags: ['hardstyle', 'melodic', 'reverse-bass'],
+    color: '#00bbdd',
+    colorSecondary: '#0088aa',
+    accent: '#44ddff',
+    streamUrl: HC_STREAM,
+    metadataUrl: HC_METADATA,
+    tags: ['hardstyle', 'melodic', 'raw'],
     comingSoon: false
   },
   {
-    id: 'hardtech',
-    name: 'Pump HardTech',
-    tagline: 'Hardtechno puro · Sin concesiones',
-    genre: 'Hardtechno',
-    description: 'La cara más dura del hardtechno. Bombos distorsionados, kicks saturando, ritmos implacables.',
-    color: '#ff4400',
-    colorSecondary: '#cc2200',
-    accent: '#ff8800',
-    streamUrl: ACTIVE_STREAM,
-    metadataUrl: ACTIVE_METADATA,
-    tags: ['hardtechno', 'industrial', 'distorcion'],
-    comingSoon: true
-  },
-  {
-    id: 'gabber',
-    name: 'Pump Gabber Unit',
-    tagline: 'Gabber · Hardcore · 200 BPM+',
-    genre: 'Gabber / Hardcore',
-    description: 'Gabber sin filtro. Del oldschool Rotterdam al mainstreamcore. Velocidades extremas.',
-    color: '#ff6600',
-    colorSecondary: '#cc4400',
-    accent: '#ffaa00',
-    streamUrl: ACTIVE_STREAM,
-    metadataUrl: ACTIVE_METADATA,
-    tags: ['gabber', 'hardcore', 'rotterdam', 'oldschool'],
-    comingSoon: true
-  },
-  {
-    id: 'industrial',
-    name: 'Industrial Pulse',
-    tagline: 'Industrial · Dark Electronica',
-    genre: 'Industrial',
-    description: 'Paisajes sonoros industriales. Metal, ruido, electrónica oscura. La banda sonora del colapso.',
-    color: '#8844ff',
-    colorSecondary: '#6622cc',
-    accent: '#aa66ff',
-    streamUrl: ACTIVE_STREAM,
-    metadataUrl: ACTIVE_METADATA,
-    tags: ['industrial', 'dark', 'electronica', 'noise'],
-    comingSoon: true
-  },
-  {
-    id: 'core-frequency',
+    id: 'hardcore',
     name: 'Core Frequency',
-    tagline: 'Hardcore · Uptempo · Terror',
+    tagline: 'Hardcore · Uptempo · Gabber',
     genre: 'Hardcore',
-    description: 'Hardcore en todas sus formas. Uptempo, terrorcore, speedcore. Sin límites de BPM.',
-    color: '#ff0055',
-    colorSecondary: '#cc0033',
-    accent: '#ff4488',
-    streamUrl: ACTIVE_STREAM,
-    metadataUrl: ACTIVE_METADATA,
-    tags: ['hardcore', 'uptempo', 'terrorcore', 'speedcore'],
+    description: 'Hardcore en todas sus formas. Uptempo, terror, gabber oldschool. Cuando querés sentir el kick en el pecho.',
+    color: '#dd2244',
+    colorSecondary: '#aa0033',
+    accent: '#ff5577',
+    streamUrl: HC_STREAM,
+    metadataUrl: HC_METADATA,
+    tags: ['hardcore', 'uptempo', 'gabber'],
     comingSoon: true
   },
   {
-    id: 'black-tunnel',
-    name: 'Black Tunnel Radio',
-    tagline: 'Neo-rave · Dark Minimal',
-    genre: 'Neo-rave / Dark Minimal',
-    description: 'El lado más oscuro del rave. Minimal, electro, techno warehouse. Para after-hours infinitos.',
-    color: '#222233',
-    colorSecondary: '#111122',
-    accent: '#555577',
-    streamUrl: ACTIVE_STREAM,
-    metadataUrl: ACTIVE_METADATA,
-    tags: ['neo-rave', 'minimal', 'warehouse', 'after-hours'],
+    id: 'nujazz',
+    name: 'Neo Jazz',
+    tagline: 'Nu Jazz · Future Jazz · Jazztronica',
+    genre: 'Nu Jazz / Future Jazz',
+    description: 'Jazz futurista para las 24 horas. Grooves electrónicos, beats rotos, teclados vintage y sintes modernos. De Robert Glasper a Flying Lotus, de Brainfeeder al vinilo caliente. Para producir, laburar o flotar.',
+    color: '#4488aa',
+    colorSecondary: '#226688',
+    accent: '#66bbdd',
+    streamUrl: HC_STREAM,
+    metadataUrl: HC_METADATA,
+    tags: ['nujazz', 'futurejazz', 'jazztronica', 'grooves'],
+    comingSoon: true
+  },
+  {
+    id: 'jazztronica',
+    name: 'Electric Grooves',
+    tagline: 'Jazztronica · Beats · Electrónica orgánica',
+    genre: 'Jazztronica / Electronic',
+    description: 'La intersección entre el jazz y la electrónica. Sinthes analógicos, samples de vinilo, ritmos rotos y armonías que no sabías que necesitabas. De Kaytranada a Thundercat, de BADBADNOTGOOD a los rincones más profundos de Bandcamp.',
+    color: '#668855',
+    colorSecondary: '#446633',
+    accent: '#88bb66',
+    streamUrl: HC_STREAM,
+    metadataUrl: HC_METADATA,
+    tags: ['jazztronica', 'beats', 'electronic', 'vinyl'],
     comingSoon: true
   }
 ]
