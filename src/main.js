@@ -217,7 +217,6 @@ class PumpRadioApp {
       // Stop any playing audio
       if (this.engine && this.engine.audio) {
         this.engine.audio.pause()
-        this.engine.audio.src = ''
       }
       this.els.playBtn.classList.remove('playing')
       this.els.playIcon.textContent = '⏸'
