@@ -164,6 +164,9 @@ class PumpRadioApp {
       console.error('[PumpRadio] Error:', error.message)
       this.els.errorText.textContent = error.message
       this.els.errorOverlay.classList.add('show')
+      setTimeout(() => {
+        this.els.errorOverlay.classList.remove('show')
+      }, 6000)
     }
 
     this.engine.onReconnect = (attempt, max) => {

@@ -94,8 +94,9 @@ export class AudioEngine {
         this.isLoading = false
         if (this.onLoadingChange) this.onLoadingChange(false)
       } else {
-        console.error('[Audio] Error al reproducir:', e)
-        if (this.onError) this.onError(e)
+        console.warn('[Audio] Error al reproducir:', e.message)
+        this.isLoading = false
+        if (this.onLoadingChange) this.onLoadingChange(false)
       }
     }
   }
@@ -105,7 +106,7 @@ export class AudioEngine {
     try {
       await this.audio.play()
     } catch (e) {
-      if (this.onError) this.onError(e)
+      console.warn('[Audio] Error al hacer play:', e.message)
     }
   }
 
