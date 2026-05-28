@@ -68,9 +68,6 @@ class PumpRadioApp {
       stationSelect: document.getElementById('station-select'),
       visualizerBars: document.getElementById('visualizer-bars'),
       newsContainer: document.getElementById('news-container'),
-      errorOverlay: document.getElementById('error-overlay'),
-      errorText: document.getElementById('error-text'),
-      retryBtn: document.getElementById('retry-btn'),
       shortcutsBtn: document.getElementById('shortcuts-btn'),
       shortcutsModal: document.getElementById('shortcuts-modal'),
       loadingState: document.getElementById('loading-state'),
@@ -98,12 +95,6 @@ class PumpRadioApp {
     // Station selector
     this.els.stationSelect.addEventListener('change', (e) => {
       this.loadStation(e.target.value)
-    })
-
-    // Retry button
-    this.els.retryBtn.addEventListener('click', () => {
-      this.els.errorOverlay.classList.remove('show')
-      this.loadStation(this.currentStation.id)
     })
 
     // Keyboard shortcuts
@@ -162,11 +153,6 @@ class PumpRadioApp {
 
     this.engine.onError = (error) => {
       console.error('[PumpRadio] Error:', error.message)
-      this.els.errorText.textContent = error.message
-      this.els.errorOverlay.classList.add('show')
-      setTimeout(() => {
-        this.els.errorOverlay.classList.remove('show')
-      }, 6000)
     }
 
     this.engine.onReconnect = (attempt, max) => {
