@@ -1,0 +1,396 @@
+@import "tailwindcss";
+
+/* ─── Tailwind v4 Theme Tokens ─── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --font-sans: var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-mono: var(--font-geist-mono, "Geist Mono", "Fira Code", "JetBrains Mono", ui-monospace, monospace);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* ─── Cyberpunk Theme Variables ─── */
+:root {
+  --background: #0a0a0f;
+  --foreground: #e0e0e0;
+  --card: rgba(18, 18, 30, 0.7);
+  --card-foreground: #e0e0e0;
+  --popover: rgba(18, 18, 30, 0.9);
+  --popover-foreground: #e0e0e0;
+  --primary: #ff2200;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(255, 34, 0, 0.15);
+  --secondary-foreground: #ff6644;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: #888899;
+  --accent: rgba(255, 34, 0, 0.2);
+  --accent-foreground: #ff4422;
+  --destructive: #ff0044;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 34, 0, 0.2);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #ff2200;
+  --sidebar: rgba(10, 10, 15, 0.95);
+  --sidebar-foreground: #e0e0e0;
+  --radius: 0.5rem;
+}
+
+/* ─── Base Styles ─── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Scanline overlay via pseudo-element */
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  opacity: 0.3;
+}
+
+/* ─── Glassmorphism ─── */
+.glassmorphism {
+  background: rgba(18, 18, 30, 0.6);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 34, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.glassmorphism-card {
+  background: rgba(18, 18, 30, 0.5);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 34, 0, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Neon Effects ─── */
+.neon-text {
+  text-shadow:
+    0 0 7px var(--primary),
+    0 0 10px var(--primary),
+    0 0 21px var(--primary),
+    0 0 42px var(--primary),
+    0 0 82px color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
+.neon-text-accent {
+  text-shadow:
+    0 0 7px var(--accent),
+    0 0 10px var(--accent),
+    0 0 21px var(--accent),
+    0 0 42px var(--accent),
+    0 0 82px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.neon-glow {
+  box-shadow:
+    0 0 5px var(--primary),
+    0 0 10px color-mix(in srgb, var(--primary) 60%, transparent),
+    0 0 20px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.neon-border {
+  border: 1px solid var(--primary);
+  box-shadow:
+    0 0 5px var(--primary),
+    inset 0 0 5px color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
+/* ─── OLED Mode ─── */
+.oled-mode {
+  --background: #000000;
+  --foreground: #cccccc;
+  --card: rgba(0, 0, 0, 0.8);
+  --card-foreground: #cccccc;
+  --border: rgba(255, 255, 255, 0.06);
+  --muted: rgba(255, 255, 255, 0.03);
+  --muted-foreground: #666677;
+}
+
+.oled-mode body,
+.oled-mode .oled-mode-bg {
+  background: #000000 !important;
+}
+
+/* ─── Animations ─── */
+@keyframes neon-pulse {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.85;
+    filter: brightness(1.15);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow:
+      0 0 5px var(--primary),
+      0 0 10px color-mix(in srgb, var(--primary) 50%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 10px var(--primary),
+      0 0 20px color-mix(in srgb, var(--primary) 70%, transparent),
+      0 0 40px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* ─── Utility Classes ─── */
+.animate-neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.animate-scanline {
+  animation: scanline 8s linear infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* ─── Scrollbar Styling ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 34, 0, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 34, 0, 0.5);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 34, 0, 0.3) transparent;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: rgba(255, 34, 0, 0.3);
+  color: #ffffff;
+}
+
+/* ─── Terminal Mode Toggle ─── */
+.terminal-mode {
+  --font-sans: var(--font-geist-mono, "Geist Mono", "Fira Code", ui-monospace, monospace);
+  --primary: #00ff41;
+  --ring: #00ff41;
+  --border: rgba(0, 255, 65, 0.2);
+  --secondary: rgba(0, 255, 65, 0.1);
+  --accent: rgba(0, 255, 65, 0.2);
+}
+
+.terminal-mode .neon-text {
+  text-shadow:
+    0 0 7px #00ff41,
+    0 0 10px #00ff41,
+    0 0 21px #00ff41,
+    0 0 42px color-mix(in srgb, #00ff41 50%, transparent);
+}
+
+/* ─── Album Art Placeholder ─── */
+.album-art-gradient {
+  background: conic-gradient(
+    from 0deg,
+    #ff2200,
+    #ff6600,
+    #ff0044,
+    #cc00ff,
+    #0066ff,
+    #00ff66,
+    #ffcc00,
+    #ff2200
+  );
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Status Indicators ─── */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot-live {
+  background: #00ff41;
+  box-shadow: 0 0 6px #00ff41;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot-connecting {
+  background: #ffcc00;
+  box-shadow: 0 0 6px #ffcc00;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.status-dot-offline {
+  background: #ff0044;
+  box-shadow: 0 0 6px #ff0044;
+}
+
+/* ─── Grid overlay for hero ─── */
+.cyberpunk-grid {
+  background-image:
+    linear-gradient(rgba(255, 34, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 34, 0, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ─── Coming Soon overlay ─── */
+.coming-soon-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.coming-soon-overlay::after {
+  content: "COMING SOON";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.6);
+}

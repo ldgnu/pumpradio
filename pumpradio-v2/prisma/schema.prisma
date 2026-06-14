@@ -1,0 +1,189 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum StationStatus {
+  LIVE
+  COMING_SOON
+  MAINTENANCE
+}
+
+enum StreamQuality {
+  LOW
+  STANDARD
+  HIGH
+  LOSSLESS
+}
+
+enum Role {
+  LISTENER
+  MODERATOR
+  ADMIN
+}
+
+model Station {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  tagline       String
+  genre         String
+  description   String
+  colorPrimary  String
+  colorSecondary String
+  colorAccent   String
+  status        StationStatus @default(COMING_SOON)
+  streamUrl     String?
+  metadataUrl   String?
+  quality       StreamQuality @default(STANDARD)
+  bpm           Int?
+  tags          String[]
+  logoUrl       String?
+  backgroundUrl String?
+  sortOrder     Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  trackRelations   StationTrack[]
+  history          PlayHistory[]
+  favorites        Favorite[]
+  listeners        ListenerCount[]
+  
+  @@index([status, isActive])
+  @@index([slug])
+}
+
+model Track {
+  id          String   @id @default(cuid())
+  title       String
+  artist      String
+  album       String?
+  artworkUrl  String?
+  duration    Int?
+  bpm         Int?
+  genre       String?
+  isrc        String?  @unique
+  stationRelations StationTrack[]
+  plays       PlayHistory[]
+  favorites   Favorite[]
+  stats       TrackStats?
+
+  @@index([artist, title])
+  @@index([genre])
+  @@index([isrc])
+}
+
+model StationTrack {
+  id        String   @id @default(cuid())
+  stationId String
+  station   Station  @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  trackId   String
+  track     Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+  assignedBy String?
+
+  @@unique([stationId, trackId])
+  @@index([stationId])
+  @@index([trackId])
+}
+
+model TrackStats {
+  id              String @id @default(cuid())
+  trackId         String @unique
+  track           Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  totalPlays      Int    @default(0)
+  uniqueListeners Int    @default(0)
+  totalDuration   Int    @default(0)
+  lastPlayedAt    DateTime?
+  rankPosition    Int?
+  weeklyPlays     Int    @default(0)
+  monthlyPlays    Int    @default(0)
+
+  @@index([rankPosition])
+}
+
+model PlayHistory {
+  id        String   @id @default(cuid())
+  trackId   String
+  track     Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  stationId String
+  station   Station  @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  duration  Int?
+  quality   StreamQuality
+  source    String
+
+  @@index([stationId, startedAt])
+  @@index([trackId, startedAt])
+  @@index([userId, startedAt])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  trackId   String?
+  track     Track?   @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  stationId String?
+  station   Station? @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, trackId])
+  @@unique([userId, stationId])
+  @@index([userId])
+}
+
+model ListenerCount {
+  id           String   @id @default(cuid())
+  stationId    String
+  station      Station  @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  count        Int
+  recordedAt   DateTime @default(now())
+
+  @@index([stationId, recordedAt])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  role          Role      @default(LISTENER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  favorites     Favorite[]
+  history       PlayHistory[]
+  sessions      Session[]
+  
+  @@index([email])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

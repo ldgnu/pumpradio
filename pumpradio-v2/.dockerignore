@@ -1,0 +1,47 @@
+# ── Dependencies ──
+node_modules/
+.next/
+dist/
+build/
+
+# ── Env ──
+.env
+.env.local
+.env.production
+.env.*.local
+
+# ── IDE ──
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── Git ──
+.git/
+.gitignore
+
+# ── Prisma ──
+prisma/migrations/
+prisma/*.db
+prisma/*.db-journal
+
+# ── Docker ──
+.dockerignore
+Dockerfile
+docker-compose*.yml
+scripts/
+
+# ── Logs ──
+*.log
+npm-debug.log*
+
+# ── Coverage ──
+coverage/
+
+# ── Prisma Client (generated) ──
+node_modules/.prisma/
