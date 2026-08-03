@@ -14,6 +14,15 @@
 - [x] Dark mode
 - [x] Remover dependencias innecesarias
 
+## Implementadas en revamp 1.1.0 ("PumpRadio FX")
+- [x] **Visualizador reactivo full-screen** (canvas acelerado: espectro + partículas + beat flash)
+- [x] **Station cards grid** (reemplaza al `<select>`)
+- [x] **Iconos SVG** (play/pause morph, volumen, logo con equalizer)
+- [x] **Now Playing marquee** para títulos largos
+- [x] **Noticias RSS reales** (Hard News + DJ Mag) con fallback offline
+- [x] Sacar debug junk del footer
+- [x] Colores del visualizador reactivos por estación
+
 ## Pendientes para futura iteración
 
 ### Corto plazo

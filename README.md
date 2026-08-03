@@ -10,9 +10,10 @@
 
 - **7 estaciones** underground con branding individual
 - **Player** con visualizador de audio reactivo
+- **Visualizador full-screen reactivo** (espectro + partículas + beat flash)
 - **Auto-reconnect** con backoff exponencial
-- **Multi-estaciones** con cambio instantáneo
-- **Noticias** de la escena rave/hardcore/hardtechno
+- **Multi-estaciones** con cards de selección y branding individual
+- **Noticias RSS reales** de la escena rave/hardcore/hardtechno
 - **PWA** — instalable como app
 - **SEO** optimizado para buscadores
 - **Keyboard shortcuts** — Space, ↑↓, ←→, M, F, ?

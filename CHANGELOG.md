@@ -1,5 +1,26 @@
 # CHANGELOG — PumpRadio
 
+## [1.1.0] — 2026-08-02 — Revamp "PumpRadio FX"
+
+### Visual
+- ✅ **Visualizador reactivo full-screen** (`src/gl-visualizer.js`): barras de espectro con gradiente + glow, campo de partículas con explosión por beat, flash de beat, viñeta dinámica. Modo idle (ambient) cuando no suena. Canvas 2D acelerado, compatible con cualquier stream (sin depender de CORS).
+- ✅ Colores del visualizador **reactivos por estación** (leen las CSS custom properties cada frame).
+- ✅ Iconos **SVG pulidos** reemplazan a los emojis: play/pause con morph, volumen con ondas, logo con equalizer animado.
+
+### UX
+- ✅ **Station cards grid** reemplaza al `<select>`: cada estación es una tarjeta clicable con nombre, tagline, tags, estado EN VIVO/Próximamente y acento de color.
+- ✅ **Now Playing marquee**: los títulos largos scrollean automáticamente.
+- ✅ Live badge con pulso y glow en el header.
+
+### Contenido
+- ✅ **Noticias RSS reales** (Hard News + DJ Mag) vía proxy CORS con múltiples fallbacks y cache, con contenido local como respaldo offline.
+
+### Limpieza
+- ✅ Eliminado el div `#dbg` de debug y `initDebug()` del footer.
+- ✅ Fix de doble-toggle en atajos de teclado cuando un botón tiene foco.
+
+**Build:** 24 KB JS + 17 KB CSS (gzip: ~8 KB + 4 KB).
+
 ## [1.0.0] — 2026-05-28 — Rebuild completo
 
 ### Cambios estructurales

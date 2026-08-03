@@ -34,8 +34,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-  <!-- Preload stream? No, browsers block autoplay anyway -->
-
   <script type="module" src="/src/main.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
@@ -46,19 +44,20 @@
   </script>
 </head>
 <body>
+  <!-- Fondo reactivo full-screen -->
+  <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+
   <div id="app" class="app">
 
     <!-- Header -->
     <header>
       <div class="header-inner">
-        <a href="/" class="logo">
-          <span class="logo-icon"></span>
+        <a href="/" class="logo" aria-label="PumpRadio inicio">
+          <span class="logo-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 12h12M6 7h12M6 17h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
           <span class="logo-text">Pump<span>Radio</span></span>
         </a>
-        <div class="station-selector">
-          <select id="station-select" aria-label="Seleccionar estación">
-            <!-- populated by JS -->
-          </select>
+        <div class="header-status">
+          <span class="live-badge"><span class="dot"></span><span>En vivo</span></span>
         </div>
       </div>
     </header>
@@ -68,10 +67,6 @@
       <!-- Player Section -->
       <section id="player-section" class="player-section">
 
-        <!-- No background overlay - keeps page bright -->
-
-
-        <!-- Player Content -->
         <div class="player-content">
 
           <!-- Album Art -->
@@ -82,29 +77,32 @@
 
           <!-- Track Info -->
           <div class="track-info">
-            <div id="live-badge" class="live-badge">
-              <span class="dot"></span>
-              <span>En vivo</span>
+            <div id="song-name" class="song-name">
+              <span class="marquee" data-text="Cargando...">Cargando...</span>
             </div>
-            <div id="song-name" class="song-name">Cargando...</div>
             <div id="artist-name" class="artist-name">PumpRadio</div>
             <div id="station-tag" class="station-tag">Hardtechno</div>
-            <div id="station-name" class="station-name"></div>
           </div>
 
-          <!-- Visualizer Bars -->
+          <!-- Visualizer Bars (pequeño, debajo del título) -->
           <div id="visualizer-bars" class="visualizer idle"></div>
 
           <!-- Controls -->
           <div class="player-controls">
             <button id="play-btn" class="btn-play" aria-label="Reproducir / Pausar">
-              <span id="play-icon">▶</span>
+              <svg id="icon-play" class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg id="icon-pause" class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
             </button>
           </div>
 
           <!-- Volume -->
           <div class="volume-control">
-            <span id="vol-icon" class="vol-icon">🔊</span>
+            <button id="vol-btn" class="vol-btn" aria-label="Silenciar / Activar sonido">
+              <svg id="vol-icon" class="vol-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3 9v6h4l5 4V5L7 9H3z"/>
+                <path class="vol-waves" d="M16 8a5 5 0 0 1 0 8M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
             <input type="range" id="volume" class="volume-slider" min="0" max="100" value="80" aria-label="Volumen">
           </div>
 
@@ -114,6 +112,17 @@
             <div id="genre-tags" class="genre-tags"></div>
           </div>
 
+        </div>
+      </section>
+
+      <!-- Stations Grid -->
+      <section class="stations-section">
+        <div class="section-header">
+          <h2>▍ Estaciones</h2>
+          <span class="text-muted" style="font-size:0.7rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.1em">Elegí tu frecuencia</span>
+        </div>
+        <div id="station-grid" class="station-grid">
+          <!-- populated by JS -->
         </div>
       </section>
 
@@ -133,7 +142,6 @@
     <!-- Footer -->
     <footer>
       PumpRadio <span>●</span> Hardcore · Hardstyle · Nu Jazz · Grooves electrónicos
-      <div id="dbg" style="font-family:monospace;font-size:10px;color:#666;margin-top:8px;opacity:0.5"></div>
     </footer>
   </div>
 
