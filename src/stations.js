@@ -3,8 +3,12 @@
  * Hardcore, Hardstyle, Nu Jazz, Future Jazz, Jazztronica
  */
 
-const HC_STREAM = 'https://stream.zeno.fm/gpv2kgzwum0uv'
-const HC_METADATA = 'https://api.zeno.fm/mounts/metadata/subscribe/e4vzegzwum0uv'
+const HC_STREAM = 'https://stream.zeno.fm/nv74sz7wum0uv' // hardcore real (antes: reutilizaba el stream de hardstyle)
+const HS_STREAM = 'https://stream.zeno.fm/gpv2kgzwum0uv' // hardstyle
+const DT_STREAM = 'https://stream.zeno.fm/fpfejm9r55vuv' // deep techno
+const HC_METADATA = 'https://api.zeno.fm/mounts/metadata/subscribe/nv74sz7wum0uv'
+const HS_METADATA = 'https://api.zeno.fm/mounts/metadata/subscribe/e4vzegzwum0uv'
+const DT_METADATA = 'https://api.zeno.fm/mounts/metadata/subscribe/fpfejm9r55vuv'
 
 export const STATIONS = [
   {
@@ -16,8 +20,8 @@ export const STATIONS = [
     color: '#cc4400',
     colorSecondary: '#992200',
     accent: '#ee7722',
-    streamUrl: HC_STREAM,
-    metadataUrl: HC_METADATA,
+    streamUrl: HS_STREAM,
+    metadataUrl: HS_METADATA,
     tags: ['hardcore', 'hardstyle', 'nujazz', 'electronic'],
     comingSoon: false
   },
@@ -30,8 +34,8 @@ export const STATIONS = [
     color: '#00bbdd',
     colorSecondary: '#0088aa',
     accent: '#44ddff',
-    streamUrl: HC_STREAM,
-    metadataUrl: HC_METADATA,
+    streamUrl: HS_STREAM,
+    metadataUrl: HS_METADATA,
     tags: ['hardstyle', 'melodic', 'raw'],
     comingSoon: false
   },
@@ -47,7 +51,7 @@ export const STATIONS = [
     streamUrl: HC_STREAM,
     metadataUrl: HC_METADATA,
     tags: ['hardcore', 'uptempo', 'gabber'],
-    comingSoon: true
+    comingSoon: false
   },
   {
     id: 'nujazz',
@@ -58,8 +62,8 @@ export const STATIONS = [
     color: '#4488aa',
     colorSecondary: '#226688',
     accent: '#66bbdd',
-    streamUrl: HC_STREAM,
-    metadataUrl: HC_METADATA,
+    streamUrl: '',
+    metadataUrl: '',
     tags: ['nujazz', 'futurejazz', 'jazztronica', 'grooves'],
     comingSoon: true
   },
@@ -72,8 +76,8 @@ export const STATIONS = [
     color: '#668855',
     colorSecondary: '#446633',
     accent: '#88bb66',
-    streamUrl: HC_STREAM,
-    metadataUrl: HC_METADATA,
+    streamUrl: '',
+    metadataUrl: '',
     tags: ['jazztronica', 'beats', 'electronic', 'vinyl'],
     comingSoon: true
   }
