@@ -31,6 +31,10 @@ export class AudioEngine {
   setupAudio() {
     this.audio = new Audio()
     this.audio.preload = 'none'
+    // Restaurar el volumen guardado: setupAudio() se llama en cada load()/
+    // reconexión y recrea el elemento → sin esto, cambiar de estación
+    // resetea el volumen a 100%.
+    this.audio.volume = this.getVolume() / 100
 
     this.audio.onplay = () => {
       this.isPlaying = true
@@ -166,10 +170,11 @@ export class AudioEngine {
       console.log(`[Audio] Reconectando (${this.reconnectAttempts}/${this.maxReconnectAttempts})`)
       this.isLoading = true
       if (this.onLoadingChange) this.onLoadingChange(true)
+      // Avisar a la UI (main.js muestra "Reconectando (x/y)...").
+      if (this.onReconnect) this.onReconnect(this.reconnectAttempts, this.maxReconnectAttempts)
 
       this.setupAudio()
       this.audio.src = this.streamUrl
-      this.audio.volume = 0.8
       this.audio.load()
     }, delay)
   }
