@@ -176,6 +176,13 @@ export class AudioEngine {
       this.setupAudio()
       this.audio.src = this.streamUrl
       this.audio.load()
+      // Reanudar reproducción tras reconexión: sin este play() el elemento
+      // recarga el stream pero queda mudo hasta que el usuario toque play.
+      this.audio.play().catch((e) => {
+        console.warn('[Audio] No se pudo reanudar tras reconexión:', e.message)
+        this.isLoading = false
+        if (this.onLoadingChange) this.onLoadingChange(false)
+      })
     }, delay)
   }
 
