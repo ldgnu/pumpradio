@@ -226,6 +226,9 @@ class PumpRadioApp {
 
     // Reset cover
     this.els.albumImg.style.display = 'none'
+    // restaurar el fallback: un cover previo de Deezer lo ocultó via onload y
+    // si el nuevo track no tiene cover, el box quedaba vacío
+    this.els.albumFallback.style.display = ''
     this.els.albumFallback.textContent = station.name.charAt(0)
 
     // Disable play button if coming soon
