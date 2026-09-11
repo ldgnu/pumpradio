@@ -284,6 +284,14 @@ class PumpRadioApp {
   }
 
   updateCoverArt(data) {
+    // Resetear el cover anterior: si el track nuevo no tiene resultado en
+    // Deezer (o la query falla), el <img> quedaba mostrando el cover del
+    // track anterior → metadata desactualizada. Volvemos al fallback.
+    this.els.albumImg.style.display = 'none'
+    this.els.albumImg.removeAttribute('src')
+    this.els.albumFallback.style.display = ''
+    this.els.albumFallback.textContent = this.currentStation.name.charAt(0)
+
     // Try Deezer API for cover art (JSONP)
     const query = encodeURIComponent(`${data.artist} ${data.song}`)
     const callbackName = `pumpradioCover_${Date.now()}`
