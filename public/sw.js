@@ -2,7 +2,7 @@
  * PumpRadio — Service Worker
  * Cache-first for assets, network-first for streams
  */
-const CACHE_NAME = 'pumpradio-v1'
+const CACHE_NAME = 'pumpradio-shell-v2'
 
 const PRECACHE_URLS = [
   '/',
@@ -51,7 +51,40 @@ self.addEventListener('fetch', event => {
     return
   }
 
-  // Static assets — cache first
+  // Navegaciones y assets sin hash — network-first (evita servir el sitio viejo).
+  // Bundles con content-hash de Vite (index-AbC12345.js) son inmutables → cache-first.
+  const isHashedAsset = /-[A-Za-z0-9_]{8,}\.(js|css|woff2?)$/i.test(url.pathname)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
+          }
+          return response
+        })
+        .catch(() => caches.match(event.request).then(c => c || caches.match('/index.html')))
+    )
+    return
+  }
+
+  if (!isHashedAsset) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone))
+          }
+          return response
+        })
+        .catch(() => caches.match(event.request))
+    )
+    return
+  }
+
+  // Static assets inmutables — cache first.
   event.respondWith(
     caches.match(event.request)
       .then(cached => {
