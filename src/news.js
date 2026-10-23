@@ -106,7 +106,10 @@ export class NewsManager {
       const link = (item.querySelector('link')?.textContent || item.getAttribute('rdf:about') || '').trim()
       const desc = (item.querySelector('description')?.textContent || '').trim()
       const dateRaw = (item.querySelector('pubDate')?.textContent || '').trim()
-      const date = dateRaw ? new Date(dateRaw).toISOString().slice(0, 10) : ''
+      // fecha inválida (p.ej. tz abreviada "BST" que V8 no parsea) → '' en vez
+      // de que toISOString() lance Invalid time value y tire TODOS los items.
+      const ts = dateRaw ? new Date(dateRaw).getTime() : NaN
+      const date = Number.isFinite(ts) ? new Date(ts).toISOString().slice(0, 10) : ''
       // Quitar HTML del summary
       const div = document.createElement('div')
       div.innerHTML = desc
