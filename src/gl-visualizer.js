@@ -1,45 +1,42 @@
 /**
- * GlVisualizer — Visualizador reactivo full-screen
+ * GlVisualizer — Visualizador reactivo full-screen (Canvas 2D acelerado).
  *
- * Canvas 2D con aceleración por hardware (compatible con cualquier stream,
- * sin necesidad de CORS). Renderiza:
- *   - Espectro de barras con gradiente + glow (centro visual)
- *   - Campo de partículas que explota con cada beat
- *   - Flash de beat y viñeta dinámica
- *   - Modo idle (ambient lento) cuando no está sonando
+ * Renderiza sobre el AUDIO REAL (AnalyserNode del AudioEngine):
+ *   - Espectro de barras con gradiente + glow
+ *   - Partículas que explotan con cada beat detectado (energía de graves)
+ *   - Flash de beat y viñeta
  *
- * El dato de audio es SIMULADO (ondas + ruido + envolvente de beat) porque
- * Zeno.fm no manda CORS y no hay acceso a Web Audio AnalyserNode real.
- * Si en el futuro el stream manda CORS, se puede inyectar FFT real.
+ * Reglas:
+ *   - Sin música no hay render: stop() corta el rAF y limpia el canvas
+ *     (antes quedaba un "modo idle" animándose para siempre).
+ *   - Si el analizador no entrega datos (stream mudo, CORS roto), el
+ *     visualizador queda plano: no inventa movimiento.
  */
+import { energyOf } from './analyser.js'
 
 const NUM_BARS = 64
 const NUM_PARTICLES = 160
-const BEAT_THRESHOLD = 0.82
 const BEAT_DECAY = 0.86
-const SMOOTH = 0.55 // suavizado de las barras (persistencia)
+const SMOOTH = 0.55
 
 export class GlVisualizer {
-  constructor(canvas, { getColors = null } = {}) {
+  constructor(canvas, { getColors = null, getAnalyser = null } = {}) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
     this.getColors = getColors
-    this.isPlaying = false
-    this.isActive = false
+    this.getAnalyser = getAnalyser
+    this.isActive = false   // sólo true mientras hay música
     this.rafId = null
     this.t = 0
     this.lastBeat = 0
     this.energy = 0
     this.flash = 0
+    this._avgEnergy = 0     // media móvil para detectar el beat
 
-    // Estado de barras suavizadas (para que no salten bruscamente)
-    this.barLevels = new Float32Array(NUM_BARS).fill(0.05)
-
-    // Partículas
+    this.barLevels = new Float32Array(NUM_BARS).fill(0)
     this.particles = []
     for (let i = 0; i < NUM_PARTICLES; i++) this.particles.push(this.spawnParticle(true))
 
-    // Resize
     this.onResize = this.onResize.bind(this)
     window.addEventListener('resize', this.onResize)
     this.onResize()
@@ -85,50 +82,51 @@ export class GlVisualizer {
   // --- API pública ---
   start() {
     this.isActive = true
-    if (!this.isPlaying) this.isPlaying = true
     if (!this.rafId) this.loop()
   }
 
+  // Apagado real: sin música no se renderiza nada.
   stop() {
-    this.isActive = true // seguimos renderizando pero en modo idle (fondo ambient)
-    this.isPlaying = false
-    if (!this.rafId) this.loop()
+    this.isActive = false
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId)
+      this.rafId = null
+    }
+    this.energy = 0
+    this.flash = 0
+    this.barLevels.fill(0)
+    this.ctx.clearRect(0, 0, this.width, this.height)
   }
 
-  // Envolvente de energía (beat simulado)
-  updateEnergy() {
-    // Envolvente tipo kick: picos con decaimiento
-    const kick = (Math.sin(this.t * 4) * 0.5 + 0.5) ** 3
-    const noise = Math.random()
-    const target = this.isPlaying
-      ? Math.min(1, kick * 0.6 + noise * 0.5 + 0.1)
-      : 0.08 + noise * 0.06
-    this.energy += (target - this.energy) * 0.2
-    if (this.energy > BEAT_THRESHOLD && this.t - this.lastBeat > 0.22) {
+  readFreq() {
+    const bridge = this.getAnalyser ? this.getAnalyser() : null
+    if (!bridge || !bridge.ok) return null
+    bridge.ensureRunning()
+    return bridge.readFrequency()
+  }
+
+  // Energía real: graves (kick) + media global. Detecta beat por salto
+  // sobre la media móvil, no por un seno inventado.
+  updateEnergy(freq) {
+    const low = energyOf(freq, 1, 12)     // ~20-250Hz con FFT 1024
+    const all = energyOf(freq, 1, freq.length)
+    const target = Math.min(1, (low / 255) * 0.75 + (all / 255) * 0.45)
+    this.energy += (target - this.energy) * 0.25
+    this._avgEnergy += (this.energy - this._avgEnergy) * 0.05
+    const jump = this.energy - this._avgEnergy
+    if (this.energy > 0.18 && jump > 0.06 && this.t - this.lastBeat > 0.18) {
       this.lastBeat = this.t
       this.flash = 1
     }
     this.flash *= BEAT_DECAY
   }
 
-  // Genera barras con forma de espectro (log-ish) + ruido + envolvente
-  sampleBars() {
-    const levels = new Float32Array(NUM_BARS)
+  sampleBars(freq) {
     for (let i = 0; i < NUM_BARS; i++) {
-      const f = i / NUM_BARS
-      const t = this.t * (1.5 + f * 6)
-      // Peso de bajos → agudos (más energía en los bajos)
-      const bassWeight = (1 - f) * 0.7 + 0.3
-      const base =
-        Math.abs(Math.sin(t * 1.3 + f * 9)) * 0.5 * bassWeight +
-        Math.abs(Math.sin(t * 2.7 - f * 5)) * 0.3 +
-        Math.random() * 0.25
-      const env = 0.35 + this.energy * 0.75
-      levels[i] = Math.min(1, base * env)
-    }
-    // Suavizado temporal
-    for (let i = 0; i < NUM_BARS; i++) {
-      this.barLevels[i] += (levels[i] - this.barLevels[i]) * SMOOTH
+      const idx = Math.floor(Math.pow(i / NUM_BARS, 1.7) * (freq.length - 1))
+      const raw = i === 0 ? 0 : (freq[idx] || 0) / 255
+      const prev = this.barLevels[i]
+      this.barLevels[i] = prev + (raw - prev) * SMOOTH
     }
     return this.barLevels
   }
@@ -142,21 +140,18 @@ export class GlVisualizer {
     const gap = Math.max(1, barW * 0.15)
     const rgb1 = this.hexToRgb(colors.primary)
     const rgb2 = this.hexToRgb(colors.glow)
-    const idleScale = this.isPlaying ? 1 : 0.18
 
     for (let i = 0; i < NUM_BARS; i++) {
-      const v = this.barLevels[i] * idleScale
+      const v = this.barLevels[i]
       const bh = Math.max(2, v * maxH)
       const x = w * 0.14 + i * barW + gap / 2
       const y = baseY - bh
-      // Gradiente por barra: del primario al glow
       const grd = ctx.createLinearGradient(0, y, 0, baseY)
       grd.addColorStop(0, `rgb(${rgb1[0]},${rgb1[1]},${rgb1[2]})`)
       grd.addColorStop(1, `rgb(${rgb2[0]},${rgb2[1]},${rgb2[2]})`)
       ctx.fillStyle = grd
       ctx.globalAlpha = 0.35 + v * 0.6
       ctx.fillRect(x, y, barW - gap, bh)
-      // Cap point brillante
       if (v > 0.25) {
         ctx.globalAlpha = v
         ctx.fillStyle = `rgb(${rgb2[0]},${rgb2[1]},${rgb2[2]})`
@@ -168,7 +163,7 @@ export class GlVisualizer {
 
   renderParticles(ctx, colors) {
     const rgb = this.hexToRgb(colors.primary)
-    // Explosión al beat
+    // Explosión sólo cuando el beat real dispara el flash
     if (this.flash > 0.05) {
       const burst = Math.floor(this.flash * 14)
       for (let i = 0; i < burst; i++) {
@@ -193,7 +188,7 @@ export class GlVisualizer {
         this.particles.splice(i, 1)
         continue
       }
-      ctx.globalAlpha = Math.max(0, p.life) * 0.6
+      ctx.globalAlpha = Math.max(0, p.life) * 0.6 * (0.25 + this.energy * 0.75)
       ctx.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
@@ -204,7 +199,6 @@ export class GlVisualizer {
   }
 
   renderBackground(ctx, colors) {
-    // Degradado base muy oscuro
     const g = ctx.createRadialGradient(
       this.width / 2, this.height * 0.5, 0,
       this.width / 2, this.height * 0.5, this.width * 0.8
@@ -228,10 +222,35 @@ export class GlVisualizer {
   }
 
   loop() {
+    // Sin música no se sigue animando: corta acá y deja el canvas limpio.
+    if (!this.isActive) {
+      this.rafId = null
+      return
+    }
+
     this.t += 0.016
     const ctx = this.ctx
     ctx.clearRect(0, 0, this.width, this.height)
-    this.updateEnergy()
+
+    const freq = this.readFreq()
+    if (!freq) {
+      // Analizador sin datos: pantalla limpia (apagado), sin inventar nada.
+      // Si se sostiene ~2s, se apaga el loop directamente: estado honesto.
+      this.energy = 0
+      this.flash = 0
+      this.ctx.clearRect(0, 0, this.width, this.height)
+      this._silentFrames = (this._silentFrames || 0) + 1
+      if (this._silentFrames > 120) {
+        this.stop()
+        return
+      }
+      this.rafId = requestAnimationFrame(() => this.loop())
+      return
+    }
+    this._silentFrames = 0
+
+    this.updateEnergy(freq)
+    this.sampleBars(freq)
     const colors = this.colors()
     this.renderBackground(ctx, colors)
     this.renderParticles(ctx, colors)

@@ -2,9 +2,9 @@
  * AudioEngine — Manejo de streaming de audio
  * 
  * Gestiona: reproducción, volumen, reconexión automática,
- * metadata vía EventSource.
- * Sin Web Audio API (Zeno no soporta CORS).
+ * metadata vía EventSource y el puente Web Audio para el visualizador real.
  */
+import { AnalyserBridge } from './analyser.js'
 
 export class AudioEngine {
   constructor() {
@@ -19,6 +19,13 @@ export class AudioEngine {
     this.reconnectDelay = 3000
     this.eventSource = null
 
+    // Puente Web Audio (visualizador real). Se construye PEREZOSO dentro de un
+    // gesto del usuario: si nace con el contexto suspended y el elemento ya
+    // suena, el MediaElementSource queda mudo para siempre.
+    this.bridge = null
+    this._hasGesture = false
+    this._bindGesture()
+
     // Callbacks
     this.onMetadata = null
     this.onPlayStateChange = null
@@ -28,17 +35,66 @@ export class AudioEngine {
     this.setupAudio()
   }
 
+  // Marca "hubo gesto real"; capture para correr antes que cualquier otro handler.
+  _bindGesture() {
+    const mark = () => {
+      this._hasGesture = true
+      // Primer gesto: acá sí se puede armar el grafo (y desbloquear el ctx).
+      this.ensureBridge()
+    }
+    for (const evt of ['pointerdown', 'touchend', 'keydown']) {
+      document.addEventListener(evt, mark, { passive: true, capture: true })
+    }
+  }
+
+  // Construye el grafo Web Audio una sola vez, siempre dentro de un gesto.
+  ensureBridge() {
+    if (this.bridge || !this._hasGesture || !this.audio) return this.bridge
+    try {
+      this.bridge = new AnalyserBridge(this.audio)
+      this.bridge.ensureRunning()
+      this.applyVolume(this.getVolume())
+      // Aviso: ya hay datos de audio disponibles. Los visualizers que se
+      // apagaron por falta de señal se vuelven a encender con este evento
+      // (si no, quedaban muertos hasta el próximo play/pause).
+      document.dispatchEvent(new CustomEvent('audio:bridge-ready'))
+    } catch (e) {
+      console.warn('[Audio] No se pudo crear el analizador:', e.message)
+      this.bridge = null
+    }
+    return this.bridge
+  }
+
+  // Devuelve el puente sólo si puede entregar datos reales.
+  getAnalyser() {
+    return this.bridge && this.bridge.ok ? this.bridge : null
+  }
+
   setupAudio() {
+    // El grafo anterior apunta al elemento viejo: cerrarlo antes de recrear.
+    if (this.bridge) {
+      try { this.bridge.close() } catch { /* noop */ }
+      this.bridge = null
+    }
+
     this.audio = new Audio()
     this.audio.preload = 'none'
+    // CORS: los mounts de Zeno mandan access-control-allow-origin:*, así el
+    // AnalyserNode recibe audio real (sin esto el visualizador queda a ciegas).
+    this.audio.crossOrigin = 'anonymous'
     // Restaurar el volumen guardado: setupAudio() se llama en cada load()/
     // reconexión y recrea el elemento → sin esto, cambiar de estación
     // resetea el volumen a 100%.
     this.audio.volume = this.getVolume() / 100
 
+    // Si ya hubo gesto (reconexión, cambio de estación), rearmar el grafo
+    // sobre el elemento nuevo para no perder el visualizador real.
+    if (this._hasGesture) this.ensureBridge()
+
     this.audio.onplay = () => {
       this.isPlaying = true
       this.isLoading = false
+      this.bridge?.ensureRunning()
       if (this.onPlayStateChange) this.onPlayStateChange(true)
       if (this.onLoadingChange) this.onLoadingChange(false)
     }
@@ -128,8 +184,19 @@ export class AudioEngine {
 
   setVolume(value) {
     const vol = Math.max(0, Math.min(100, value))
-    this.audio.volume = vol / 100
+    this.applyVolume(vol)
     localStorage.setItem('pumpradio_volume', vol)
+  }
+
+  // Con puente Web Audio el volumen va por el GainNode (iOS ignora
+  // audio.volume). Sin puente, se usa el volumen nativo del elemento.
+  applyVolume(vol) {
+    if (this.bridge && this.bridge.gain) {
+      const t = this.bridge.ctx.currentTime
+      this.bridge.gain.gain.setValueAtTime(Math.max(0, Math.min(100, vol)) / 100, t)
+    } else if (this.audio) {
+      this.audio.volume = Math.max(0, Math.min(100, vol)) / 100
+    }
   }
 
   getVolume() {

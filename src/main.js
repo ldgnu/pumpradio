@@ -35,6 +35,30 @@ class PumpRadioApp {
     this.initGlVisualizer()
     this.initNews()
 
+    // Hook de QA: estado de los visualizers para verificación headless.
+    window.__viz = {
+      bar: () => this.barVisualizer,
+      gl: () => this.glVisualizer,
+      engine: () => this.engine,
+    }
+
+    // El autoplay puede haber arrancado ANTES de crear los visualizers
+    // (loadStation corre en init()). Sin esta sincronización quedaban
+    // apagados con música sonando, esperando un evento que ya había pasado.
+    if (this.engine.isPlaying) {
+      this.barVisualizer?.start()
+      this.glVisualizer?.start()
+    }
+
+    // El analizador real recién existe tras el primer gesto del usuario. Si el
+    // visualizer ya se había apagado por falta de señal, este evento lo revive.
+    document.addEventListener('audio:bridge-ready', () => {
+      if (this.engine.isPlaying) {
+        this.barVisualizer?.start()
+        this.glVisualizer?.start()
+      }
+    })
+
     const savedVolume = this.engine.getVolume()
     this.els.volume.value = savedVolume
     this.engine.setVolume(savedVolume)
@@ -317,7 +341,10 @@ class PumpRadioApp {
 
     setTimeout(() => {
       if (window[callbackName]) delete window[callbackName]
-      if (script.parentNode) script.parentNode.remove()
+      // OJO: script.remove() — NO script.parentNode.remove(), que borraría
+      // document.body entero (el script se appendea al body) y dejaba la
+      // página en blanco a los 5s de buscar una portada.
+      script.remove()
     }, 5000)
   }
 
@@ -336,14 +363,19 @@ class PumpRadioApp {
 
   initBarVisualizer() {
     if (this.els.visualizerBars) {
-      this.barVisualizer = new BarVisualizer(this.els.visualizerBars)
+      this.barVisualizer = new BarVisualizer(this.els.visualizerBars, {
+        getAnalyser: () => this.engine.getAnalyser(),
+      })
     }
   }
 
   initGlVisualizer() {
     if (this.els.bgCanvas) {
-      this.glVisualizer = new GlVisualizer(this.els.bgCanvas)
-      this.glVisualizer.stop() // arranca en modo idle (ambient)
+      this.glVisualizer = new GlVisualizer(this.els.bgCanvas, {
+        getAnalyser: () => this.engine.getAnalyser(),
+      })
+      // Arranca apagado: sólo se enciende cuando hay audio real.
+      this.glVisualizer.stop()
     }
   }
 
