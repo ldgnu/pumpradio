@@ -355,8 +355,8 @@ class PumpRadioApp {
       artist: data.artist || 'PumpRadio',
       album: this.currentStation.name,
       artwork: [
-        { src: '/pumpradio-logo-192.png', sizes: '192x192', type: 'image/png' },
-        { src: '/pumpradio-logo-512.png', sizes: '512x512', type: 'image/png' }
+        { src: import.meta.env.BASE_URL + 'pumpradio-logo-192.png', sizes: '192x192', type: 'image/png' },
+        { src: import.meta.env.BASE_URL + 'pumpradio-logo-512.png', sizes: '512x512', type: 'image/png' }
       ]
     })
   }

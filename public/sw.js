@@ -4,10 +4,12 @@
  */
 const CACHE_NAME = 'pumpradio-shell-v2'
 
+// Rutas relativas al scope del SW: en GitHub Pages el sitio vive en /pumpradio/,
+// con '/' los addAll fallaban (404) y el SW no se instalaba.
 const PRECACHE_URLS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  './',
+  './index.html',
+  './manifest.json'
 ]
 
 // Precached URLs injected by workbox

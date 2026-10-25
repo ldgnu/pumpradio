@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: '/',
+  // base configurable: GitHub Pages sirve el repo en /pumpradio/, no en la raíz.
+  // El workflow de deploy pasa VITE_BASE=/pumpradio/; en un dominio propio
+  // (base '/') no hace falta setear nada.
+  base: process.env.VITE_BASE || '/',
   build: {
     outDir: 'dist',
     assetsInlineLimit: 4096,
